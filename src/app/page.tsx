@@ -36,18 +36,20 @@ const fieldValidations = {
     }
 };
 
+const defaultValue = {
+    airport: '桃園國際機場 第一航廈',
+    flightNumber: '',
+    name: '',
+    phone: '',
+    idOrPassport: '',
+    remarks: ''
+};
+
 const Home = () => {
     const { data, error } = useSWR(API_URL, fetcher);
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [apiResponse, setApiResponse] = useState<ApiResponse>(ApiResponse.Idle);
-    const [fields, setFields] = useState({
-        airport: '桃園國際機場 第一航廈',
-        flightNumber: '',
-        name: '',
-        phone: '',
-        idOrPassport: '',
-        remarks: ''
-    });
+    const [fields, setFields] = useState(defaultValue);
 
     const [errors, setErrors] = useState({
         airport: '',
@@ -92,7 +94,7 @@ const Home = () => {
     /**
      * Handles form submission and performs various actions based on the input and API response.
      */
-    const handleSubmit = (): void => {
+    const handleSubmitAndCheck = (): void => {
         setIsBottomSheetOpen(true);
 
         if (!validate()) {
@@ -114,6 +116,18 @@ const Home = () => {
         } else {
             setApiResponse(ApiResponse.NotFound);
         }
+    };
+
+    const handleSubmitAfterCheck = () => {
+        setApiResponse(ApiResponse.Success);
+        setTimeout(() => {
+            setIsBottomSheetOpen(false);
+        }, 3000);
+    };
+
+    const handleFormReset = () => {
+        setFields(defaultValue);
+        setIsBottomSheetOpen(false);
     };
 
     return (
@@ -171,7 +185,7 @@ const Home = () => {
                 <div className="max-w-sm mx-auto sm:max-w-md h-full flex items-center">
                     <button
                         className="w-full p-2 border border-gray-300 rounded-md bg-blue-500 text-white"
-                        onClick={handleSubmit}>
+                        onClick={handleSubmitAndCheck}>
                         下一步
                     </button>
                 </div>
@@ -191,17 +205,17 @@ const Home = () => {
                 ) : (
                     <div className="max-w-sm mx-auto sm:max-w-md">
                         <div className="w-full">
-                            <p className="text-2xl text-left px-4">查不到「ＸＸＸ」航班資訊</p>
+                            <p className="text-2xl text-left px-4">查不到「{fields.flightNumber}」航班資訊</p>
                             <p className="text-left px-4">請確認航班資訊、起飛時間等，你也可以直接填寫此航班作為機場接送資訊</p>
                         </div>
                         <div className="w-full flex flex-col justify-center gap-4 mt-4">
                             <button
-                                onClick={() => setIsBottomSheetOpen(false)}
+                                onClick={handleSubmitAfterCheck}
                                 className="w-full p-2 border border-gray-300 rounded-md bg-blue-500 text-white">
                                 確認航班資訊，並送出
                             </button>
                             <button
-                                onClick={() => setIsBottomSheetOpen(false)}
+                                onClick={handleFormReset}
                                 className="w-full p-2 border border-gray-300 rounded-md bg-blue-500 text-white">
                                 重新填寫
                             </button>
