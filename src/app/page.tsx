@@ -95,8 +95,6 @@ const Home = () => {
      * Handles form submission and performs various actions based on the input and API response.
      */
     const handleSubmitAndCheck = (): void => {
-        setIsBottomSheetOpen(true);
-
         if (!validate()) {
             return;
         }
@@ -106,12 +104,14 @@ const Home = () => {
             return;
         }
 
+        setIsBottomSheetOpen(true);
         const result = findFlightByNumber(fields.flightNumber, data);
 
         if (result.isMatch) {
             setApiResponse(ApiResponse.Success);
             setTimeout(() => {
                 setIsBottomSheetOpen(false);
+                setFields(defaultValue);
             }, 3000);
         } else {
             setApiResponse(ApiResponse.NotFound);
@@ -122,7 +122,9 @@ const Home = () => {
         setApiResponse(ApiResponse.Success);
         setTimeout(() => {
             setIsBottomSheetOpen(false);
+            setFields(defaultValue);
         }, 3000);
+        setFields(defaultValue);
     };
 
     const handleFormReset = () => {
