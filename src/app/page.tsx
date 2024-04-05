@@ -162,6 +162,7 @@ const Home = () => {
                             label="乘車備註"
                             value={fields.remarks}
                             onChange={(value) => setFields({ ...fields, remarks: value })}
+                            multiline={true}
                         />
                     </div>
                 </div>
