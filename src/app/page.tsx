@@ -1,14 +1,20 @@
 'use client'; // This is a client component
+import useSWR from 'swr';
+import { useState } from 'react';
 import Image from 'next/image';
 import { icon_success } from '@/app/components/Image';
-import { useState } from 'react';
 import InputField from '@/app/components/inputField';
+import { FlightData, findFlightByNumber } from '@/app/utils/flightUtils';
 
-enum ApiStatus {
+const API_URL =
+    'https://tdx.transportdata.tw/api/basic/v2/Air/FIDS/Airport/Departure/TPE?$orderby=ScheduleDepartureTime&$format=JSON';
+const fetcher = (...args: [input: RequestInfo, init?: RequestInit]) => fetch(...args).then((res) => res.json());
+
+enum ApiResponse {
     Idle = 'idle',
     Loading = 'loading',
     Success = 'success',
-    Failed = 'failed'
+    NotFound = 'notFound'
 }
 
 const fieldValidations = {
@@ -31,8 +37,9 @@ const fieldValidations = {
 };
 
 const Home = () => {
+    const { data, error } = useSWR(API_URL, fetcher);
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-    const [apiStatus, setApiStatus] = useState<ApiStatus>(ApiStatus.Idle);
+    const [apiResponse, setApiResponse] = useState<ApiResponse>(ApiResponse.Idle);
     const [fields, setFields] = useState({
         airport: '桃園國際機場 第一航廈',
         flightNumber: '',
@@ -54,7 +61,7 @@ const Home = () => {
      * Validates form fields.
      * @returns {boolean} - Indicates whether the form is valid or not.
      */
-    const validate = () => {
+    const validate = (): boolean => {
         let isValid = true;
         let newErrors = { airport: '', flightNumber: '', name: '', phone: '', idOrPassport: '' };
 
@@ -82,19 +89,31 @@ const Home = () => {
         return isValid;
     };
 
-    const handleSubmit = () => {
+    /**
+     * Handles form submission and performs various actions based on the input and API response.
+     */
+    const handleSubmit = (): void => {
         setIsBottomSheetOpen(true);
-        setApiStatus(ApiStatus.Failed);
 
         if (!validate()) {
             return;
         }
 
-        // if (apiStatus === ApiStatus.Success) {
-        //     setTimeout(() => {
-        //         setIsBottomSheetOpen(false);
-        //     }, 3000);
-        // }
+        if (error) {
+            console.log('API error');
+            return;
+        }
+
+        const result = findFlightByNumber(fields.flightNumber, data);
+
+        if (result.isMatch) {
+            setApiResponse(ApiResponse.Success);
+            setTimeout(() => {
+                setIsBottomSheetOpen(false);
+            }, 3000);
+        } else {
+            setApiResponse(ApiResponse.NotFound);
+        }
     };
 
     return (
@@ -161,7 +180,7 @@ const Home = () => {
                 className={`z-50 fixed inset-x-0 bottom-0 p-4 bg-white rounded-t-lg shadow-lg transform transition-transform flex flex-col items-center justify-center ${
                     isBottomSheetOpen ? 'translate-y-0 h-64' : 'translate-y-full'
                 }`}>
-                {apiStatus === ApiStatus.Success ? (
+                {apiResponse === ApiResponse.Success ? (
                     <div
                         className={`fixed inset-x-0 bottom-0 p-4 bg-white rounded-t-lg shadow-lg 
                     transform transition-transform flex flex-col items-center justify-center ${isBottomSheetOpen ? 'translate-y-0 h-64' : 'translate-y-full'}`}>
