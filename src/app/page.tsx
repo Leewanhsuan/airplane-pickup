@@ -1,7 +1,8 @@
 'use client'; // This is a client component
 import { useState } from 'react';
 import Image from 'next/image';
-import { useFlightData } from '@/app/hooks/useFlightData';
+import useFlightData from '@/app/hooks/useFlightData';
+import useFormState from '@/app/hooks/useFormState';
 import { icon_success } from '@/app/components/Image';
 import InputField from '@/app/components/inputField';
 import { findFlightByNumber } from '@/app/utils/flightUtils';
@@ -13,79 +14,12 @@ enum ApiResponse {
     NotFound = 'notFound'
 }
 
-const fieldValidations = {
-    flightNumber: {
-        regex: /^[A-Za-z0-9]+$/,
-        errorMessage: '格式錯誤，應由英文數字組成'
-    },
-    name: {
-        regex: /^[A-Za-z ]+$/,
-        errorMessage: '格式錯誤，請填寫與護照姓名相同的英文姓名'
-    },
-    phone: {
-        regex: /^\d+$/,
-        errorMessage: '格式錯誤，應由數字組成 ex.0912345678'
-    },
-    idOrPassport: {
-        regex: /^[A-Za-z0-9]+$/,
-        errorMessage: '格式錯誤，應由英文數字組成'
-    }
-};
-
-const defaultValue = {
-    airport: '桃園國際機場 第一航廈',
-    flightNumber: '',
-    name: '',
-    phone: '',
-    idOrPassport: '',
-    remarks: ''
-};
-
 const Home = () => {
     const { data, error, isLoading } = useFlightData();
+    const { fields, errors, handleChange, validate, resetFields } = useFormState();
+
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [apiResponse, setApiResponse] = useState<ApiResponse>(ApiResponse.Idle);
-    const [fields, setFields] = useState(defaultValue);
-
-    const [errors, setErrors] = useState({
-        airport: '',
-        flightNumber: '',
-        name: '',
-        phone: '',
-        idOrPassport: ''
-    });
-
-    /**
-     * Validates form fields.
-     * @returns {boolean} - Indicates whether the form is valid or not.
-     */
-    const validate = (): boolean => {
-        let isValid = true;
-        let newErrors = { airport: '', flightNumber: '', name: '', phone: '', idOrPassport: '' };
-
-        // Iterate over each field in fieldValidations object
-        Object.entries(fieldValidations).forEach(([field, { regex, errorMessage }]) => {
-            const fieldValue = fields[field as keyof typeof fields];
-
-            // Check if the field value is empty
-            if (fieldValue.trim() === '') {
-                newErrors[field as keyof typeof newErrors] = '請填入資訊';
-                isValid = false;
-            } else if (!regex.test(fieldValue)) {
-                // Check if the field value matches the regex pattern
-                newErrors[field as keyof typeof newErrors] = errorMessage;
-                isValid = false;
-            } else {
-                // Clear the error message for the field
-                newErrors[field as keyof typeof newErrors] = '';
-            }
-        });
-
-        // Update the errors state
-        setErrors(newErrors);
-
-        return isValid;
-    };
 
     /**
      * Handles form submission and performs various actions based on the input and API response.
@@ -107,7 +41,7 @@ const Home = () => {
             setApiResponse(ApiResponse.Success);
             setTimeout(() => {
                 setIsBottomSheetOpen(false);
-                setFields(defaultValue);
+                resetFields();
             }, 3000);
         } else {
             setApiResponse(ApiResponse.NotFound);
@@ -118,13 +52,12 @@ const Home = () => {
         setApiResponse(ApiResponse.Success);
         setTimeout(() => {
             setIsBottomSheetOpen(false);
-            setFields(defaultValue);
+            resetFields();
         }, 3000);
-        setFields(defaultValue);
     };
 
     const handleFormReset = () => {
-        setFields(defaultValue);
+        resetFields();
         setIsBottomSheetOpen(false);
     };
 
@@ -142,13 +75,13 @@ const Home = () => {
                         <InputField
                             label="下車機場"
                             value={fields.airport}
-                            onChange={(value) => setFields({ ...fields, airport: value })}
+                            onChange={(value) => handleChange('airport', value)}
                             disabled={true}
                         />
                         <InputField
                             label="航班編號"
                             value={fields.flightNumber}
-                            onChange={(value) => setFields({ ...fields, flightNumber: value })}
+                            onChange={(value) => handleChange('flightNumber', value)}
                             error={errors.flightNumber}
                         />
                         <h2 className="mt-4 font-semibold">旅客資訊</h2>
@@ -156,27 +89,27 @@ const Home = () => {
                             label="姓名"
                             description="※ 與護照相同之英文姓名"
                             value={fields.name}
-                            onChange={(value) => setFields({ ...fields, name: value })}
+                            onChange={(value) => handleChange('name', value)}
                             error={errors.name}
                         />
                         <InputField
                             label="電話"
                             value={fields.phone}
-                            onChange={(value) => setFields({ ...fields, phone: value })}
+                            onChange={(value) => handleChange('phone', value)}
                             error={errors.phone}
                         />
                         <InputField
                             label="身分證字號/護照號碼"
                             description="※ 無身份字號之外國旅客請填寫護照號碼"
                             value={fields.idOrPassport}
-                            onChange={(value) => setFields({ ...fields, idOrPassport: value })}
+                            onChange={(value) => handleChange('idOrPassport', value)}
                             error={errors.idOrPassport}
                         />
                         <InputField
                             label="乘車備註"
-                            value={fields.remarks}
-                            onChange={(value) => setFields({ ...fields, remarks: value })}
                             multiline={true}
+                            value={fields.remarks}
+                            onChange={(value) => handleChange('remarks', value)}
                         />
                     </div>
                 </div>
