@@ -1,18 +1,14 @@
 'use client'; // This is a client component
-import useSWR from 'swr';
 import { useState } from 'react';
 import Image from 'next/image';
+import { useFlightData } from '@/app/hooks/useFlightData';
 import { icon_success } from '@/app/components/Image';
 import InputField from '@/app/components/inputField';
-import { FlightData, findFlightByNumber } from '@/app/utils/flightUtils';
-
-const API_URL =
-    'https://tdx.transportdata.tw/api/basic/v2/Air/FIDS/Airport/Departure/TPE?$orderby=ScheduleDepartureTime&$format=JSON';
-const fetcher = (...args: [input: RequestInfo, init?: RequestInit]) => fetch(...args).then((res) => res.json());
+import { findFlightByNumber } from '@/app/utils/flightUtils';
+import LoadingSpinner from '@/app/components/LoadingSpinner';
 
 enum ApiResponse {
     Idle = 'idle',
-    Loading = 'loading',
     Success = 'success',
     NotFound = 'notFound'
 }
@@ -46,7 +42,7 @@ const defaultValue = {
 };
 
 const Home = () => {
-    const { data, error } = useSWR(API_URL, fetcher);
+    const { data, error, isLoading } = useFlightData();
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [apiResponse, setApiResponse] = useState<ApiResponse>(ApiResponse.Idle);
     const [fields, setFields] = useState(defaultValue);
@@ -199,32 +195,42 @@ const Home = () => {
                 className={`z-50 fixed inset-x-0 bottom-0 p-4 bg-white rounded-t-lg shadow-lg transform transition-transform flex flex-col items-center justify-center ${
                     isBottomSheetOpen ? 'translate-y-0 h-64' : 'translate-y-full'
                 }`}>
-                {apiResponse === ApiResponse.Success ? (
-                    <div
-                        className={`fixed inset-x-0 bottom-0 p-4 bg-white rounded-t-lg shadow-lg 
-                    transform transition-transform flex flex-col items-center justify-center ${isBottomSheetOpen ? 'translate-y-0 h-64' : 'translate-y-full'}`}>
-                        <Image src={icon_success} alt="submit" className="m-5" />
-                        <div className=" text-2xl">完成送機行程</div>
+                {isLoading ? (
+                    <div className="p-2">
+                        <LoadingSpinner />
                     </div>
                 ) : (
-                    <div className="max-w-sm mx-auto sm:max-w-md">
-                        <div className="w-full">
-                            <p className="text-2xl text-left px-4">查不到「{fields.flightNumber}」航班資訊</p>
-                            <p className="text-left px-4">請確認航班資訊、起飛時間等，你也可以直接填寫此航班作為機場接送資訊</p>
-                        </div>
-                        <div className="w-full flex flex-col justify-center gap-4 mt-4">
-                            <button
-                                onClick={handleSubmitAfterCheck}
-                                className="w-full p-2 border border-gray-300 rounded-md bg-blue-500 text-white">
-                                確認航班資訊，並送出
-                            </button>
-                            <button
-                                onClick={handleFormReset}
-                                className="w-full p-2 border border-gray-300 rounded-md bg-blue-500 text-white">
-                                重新填寫
-                            </button>
-                        </div>
-                    </div>
+                    <>
+                        {apiResponse === ApiResponse.Success ? (
+                            <div
+                                className={`fixed inset-x-0 bottom-0 p-4 bg-white rounded-t-lg shadow-lg 
+                    transform transition-transform flex flex-col items-center justify-center ${isBottomSheetOpen ? 'translate-y-0 h-64' : 'translate-y-full'}`}>
+                                <Image src={icon_success} alt="submit" className="m-5" />
+                                <div className=" text-2xl">完成送機行程</div>
+                            </div>
+                        ) : (
+                            <div className="max-w-sm mx-auto sm:max-w-md">
+                                <div className="w-full">
+                                    <p className="text-2xl text-left px-4">查不到「{fields.flightNumber}」航班資訊</p>
+                                    <p className="text-left px-4">
+                                        請確認航班資訊、起飛時間等，你也可以直接填寫此航班作為機場接送資訊
+                                    </p>
+                                </div>
+                                <div className="w-full flex flex-col justify-center gap-4 mt-4">
+                                    <button
+                                        onClick={handleSubmitAfterCheck}
+                                        className="w-full p-2 border border-gray-300 rounded-md bg-blue-500 text-white">
+                                        確認航班資訊，並送出
+                                    </button>
+                                    <button
+                                        onClick={handleFormReset}
+                                        className="w-full p-2 border border-gray-300 rounded-md bg-blue-500 text-white">
+                                        重新填寫
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>
