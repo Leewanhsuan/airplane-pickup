@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 接機行程預約
 
-## Getting Started
+## 作品說明
 
-First, run the development server:
+Pickup Now 是一款可以隨時隨地安排接機服務的產品，讓每一次旅行開始於無憂無慮，預約 Pickup Now 的機場接送服務，享受頂級舒適的旅途體驗。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![專案圖片1](./src/app/assets/intro/mockup.png)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 系統說明
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 運行方式
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+-   安裝依賴: `npm install`
+-   啟動服務: `npm run dev`
+-   Node.js 版本 v18.17.1
 
-## Learn More
+## 主要資料夾結構
 
-To learn more about Next.js, take a look at the following resources:
+-   assets: 圖片資源檔案
+-   components : 共用元件與頁面邏輯
+-   hooks: 抽離的業務邏輯
+-   utils：共用的 web utils
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 主要技術
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+-   Next.js with Typescript：使用 Next.js 為前端框架，搭配 TypeScript 撰寫
+-   Vercel：網頁部署服務
+-   Tailwind CSS：作為 CSS 框架
 
-## Deploy on Vercel
+## 其他技術說明
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+-   專案使用 eslint + prettier 以維持程式碼整潔
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## 資料來源
+
+[TDX 運輸資料流通服務](https://tdx.transportdata.tw/api-service/swagger/basic/eb87998f-2f9c-4592-8d75-c62e5b724962#/)
+
+## Demo 路徑
