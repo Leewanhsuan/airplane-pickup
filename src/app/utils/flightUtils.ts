@@ -28,14 +28,16 @@ interface FlightMatchResult {
  * @returns An object indicating whether a match was found and the extracted airline ID and flight number if applicable.
  */
 export const findFlightByNumber = (flightNumber: string, data: FlightData[]): FlightMatchResult => {
-    // Check if the flight number matches the pattern of one or more alphabetic characters followed by one or more numeric characters
-    const match = flightNumber.match(/^([A-Za-z]+)(\d+)$/);
+    // Ensure data is an array
+    if (!Array.isArray(data)) {
+        console.error('Invalid data type received, expected an array of FlightData objects:', data);
+        return { isMatch: false };
+    }
 
+    const match = flightNumber.match(/^([A-Za-z]+)(\d+)$/);
     if (match) {
         const airlineID = match[1];
         const flightNumber = match[2];
-
-        // Check if the airline ID and flight number exist in the flight data
         const isMatch = data.some((d) => d.AirlineID === airlineID && d.FlightNumber === flightNumber);
 
         if (isMatch) {
