@@ -31,7 +31,7 @@ const InputField = ({ label, value, onChange, error, disabled, multiline, descri
                     value={value}
                     disabled={disabled}
                     onChange={(e) => onChange(e.target.value)}
-                    className={`w-full p-2 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-md ${disabled ? 'text-stone-300' : 'text-stone-950'}`}
+                    className={`w-full p-2 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-md ${disabled ? 'text-stone-300' : 'text-stone-950'} `}
                 />
             )}
             {error && (

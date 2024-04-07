@@ -21,9 +21,6 @@ const Home = () => {
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [apiResponse, setApiResponse] = useState<ApiResponse>(ApiResponse.Idle);
 
-    /**
-     * Handles form submission and performs various actions based on the input and API response.
-     */
     const handleSubmitAndCheck = (): void => {
         if (!validate()) {
             return;
@@ -63,15 +60,15 @@ const Home = () => {
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-100">
-            <header className="h-1/6 bg-gray-200 p-4">
+            <header className="h-1/6 bg-secondary-blue p-4">
                 <div className="max-w-sm mx-auto sm:max-w-md text-center">
-                    <p className="text-lg font-bold">送機行程</p>
+                    <p className="text-lg font-bold text-white">送機行程</p>
                 </div>
             </header>
             <main className="flex-grow overflow-auto" style={{ height: 'calc(100vh - (100vh / 6 * 2))' }}>
                 <div className="max-w-sm mx-auto p-4 sm:max-w-md">
                     <div className="mb-4">
-                        <h2 className="mt-4 font-semibold">送機計畫</h2>
+                        <h2 className="mt-4 font-semibold ">送機計畫</h2>
                         <InputField
                             label="下車機場"
                             value={fields.airport}
@@ -114,10 +111,10 @@ const Home = () => {
                     </div>
                 </div>
             </main>
-            <footer className="h-1/6 bg-gray-200 p-4">
+            <footer className="h-1/6 bg-white p-4">
                 <div className="max-w-sm mx-auto sm:max-w-md h-full flex items-center">
                     <button
-                        className="w-full p-2 border border-gray-300 rounded-md bg-blue-500 text-white"
+                        className="w-full p-2 border border-gray-300 rounded-md bg-main-blue text-white"
                         onClick={handleSubmitAndCheck}>
                         下一步
                     </button>
@@ -152,12 +149,12 @@ const Home = () => {
                                 <div className="w-full flex flex-col justify-center gap-4 mt-4">
                                     <button
                                         onClick={handleSubmitAfterCheck}
-                                        className="w-full p-2 border border-gray-300 rounded-md bg-blue-500 text-white">
+                                        className="w-full p-2 border border-gray-300 rounded-md bg-main-blue text-white">
                                         確認航班資訊，並送出
                                     </button>
                                     <button
                                         onClick={handleFormReset}
-                                        className="w-full p-2 border border-gray-300 rounded-md bg-blue-500 text-white">
+                                        className="w-full p-2 border border-gray-300 rounded-md bg-main-blue text-white">
                                         重新填寫
                                     </button>
                                 </div>

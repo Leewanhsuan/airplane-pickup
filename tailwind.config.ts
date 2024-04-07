@@ -21,6 +21,10 @@ const config: Config = {
                     '0%, 100%': { backgroundImage: 'linear-gradient(to right, #4facfe, #00f2fe)' },
                     '50%': { backgroundImage: 'linear-gradient(to right, #00f2fe, #4facfe)' }
                 }
+            },
+            colors: {
+                'main-blue': '#61A2DA',
+                'secondary-blue': '#6CB7DA'
             }
         }
     },
