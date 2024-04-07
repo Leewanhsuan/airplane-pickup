@@ -9,12 +9,14 @@ interface Props {
     error?: ReactNode;
     disabled?: boolean;
     multiline?: boolean;
+    description?: string;
 }
 
-const InputField = ({ label, value, onChange, error, disabled, multiline }: Props) => {
+const InputField = ({ label, value, onChange, error, disabled, multiline, description }: Props) => {
     return (
         <div className="mt-2">
             <h2 className="text-sm my-2">{label}</h2>
+            <span className="text-xs text-stone-500">{description}</span>
             {multiline ? (
                 <textarea
                     rows={4}

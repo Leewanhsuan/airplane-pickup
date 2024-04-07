@@ -105,7 +105,7 @@ const Home = () => {
         }
 
         setIsBottomSheetOpen(true);
-        const result = findFlightByNumber(fields.flightNumber, data);
+        const result = findFlightByNumber(fields.flightNumber.toUpperCase(), data);
 
         if (result.isMatch) {
             setApiResponse(ApiResponse.Success);
@@ -158,6 +158,7 @@ const Home = () => {
                         <h2 className="mt-4 font-semibold">旅客資訊</h2>
                         <InputField
                             label="姓名"
+                            description="※ 與護照相同之英文姓名"
                             value={fields.name}
                             onChange={(value) => setFields({ ...fields, name: value })}
                             error={errors.name}
@@ -170,6 +171,7 @@ const Home = () => {
                         />
                         <InputField
                             label="身分證字號/護照號碼"
+                            description="※ 無身份字號之外國旅客請填寫護照號碼"
                             value={fields.idOrPassport}
                             onChange={(value) => setFields({ ...fields, idOrPassport: value })}
                             error={errors.idOrPassport}
