@@ -22,23 +22,26 @@ Pickup Now 是一款可以隨時隨地安排接機服務的產品，讓每一次
 
 ```bash
 ├── src
-│ └── app
-│ ├── assets
-│ │ ├── icon
-│ │ └── intro
-│ ├── components
-│ │ ├── Image.tsx
-│ │ ├── LoadingSpinner.tsx
-│ │ └── inputField.tsx
-│ ├── favicon.ico
-│ ├── globals.css
-│ ├── hooks
-│ │ ├── useFlightData.ts
-│ │ └── useFormState.ts
-│ ├── layout.tsx
-│ ├── page.tsx
-│ └── utils
-│ └── flightUtils.ts
+│   └── app
+│       ├── assets
+│       │   ├── icon
+│       │   └── intro
+│       ├── components
+│       │   ├── ButtonSheet.tsx
+│       │   ├── Image.tsx
+│       │   ├── LoadingSpinner.tsx
+│       │   └── inputField.tsx
+│       ├── favicon.ico
+│       ├── globals.css
+│       ├── hooks
+│       │   ├── useFlightData.ts
+│       │   └── useFormState.ts
+│       ├── layout.tsx
+│       ├── page.tsx
+│       ├── service
+│       │   └── flightFormat.ts
+│       └── utils
+│           └── status.ts
 ├── tailwind.config.ts
 └── tsconfig.json
 ```
