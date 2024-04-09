@@ -1,18 +1,11 @@
 'use client'; // This is a client component
 import { useState } from 'react';
-import Image from 'next/image';
 import useFlightData from '@/app/hooks/useFlightData';
 import useFormState from '@/app/hooks/useFormState';
-import { icon_success } from '@/app/components/Image';
 import InputField from '@/app/components/inputField';
-import { findFlightByNumber } from '@/app/utils/flightUtils';
-import LoadingSpinner from '@/app/components/LoadingSpinner';
-
-enum ApiResponse {
-    Idle = 'idle',
-    Success = 'success',
-    NotFound = 'notFound'
-}
+import { findFlightByNumber } from '@/app/service/flightFormat';
+import { ApiResponse } from '@/app/utils/status';
+import ButtonSheet from '@/app/components/ButtonSheet';
 
 const Home = () => {
     const { data, error, isLoading } = useFlightData();
@@ -21,7 +14,14 @@ const Home = () => {
     const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
     const [apiResponse, setApiResponse] = useState<ApiResponse>(ApiResponse.Idle);
 
-    const handleSubmitAndCheck = (): void => {
+    const closeBottomSheetAndReset = (milliseconds: number) => {
+        setTimeout(() => {
+            setIsBottomSheetOpen(false);
+            resetFields();
+        }, milliseconds);
+    };
+
+    const handleSubmitAndCheck = () => {
         if (!validate()) {
             return;
         }
@@ -36,10 +36,7 @@ const Home = () => {
 
         if (result.isMatch) {
             setApiResponse(ApiResponse.Success);
-            setTimeout(() => {
-                setIsBottomSheetOpen(false);
-                resetFields();
-            }, 3000);
+            closeBottomSheetAndReset(3000);
         } else {
             setApiResponse(ApiResponse.NotFound);
         }
@@ -47,10 +44,7 @@ const Home = () => {
 
     const handleSubmitAfterCheck = () => {
         setApiResponse(ApiResponse.Success);
-        setTimeout(() => {
-            setIsBottomSheetOpen(false);
-            resetFields();
-        }, 3000);
+        closeBottomSheetAndReset(3000);
     };
 
     const handleFormReset = () => {
@@ -123,48 +117,14 @@ const Home = () => {
                 </div>
             </footer>
             {isBottomSheetOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-40"></div>}
-            <div
-                className={`z-50 fixed inset-x-0 bottom-0 p-4 bg-white rounded-t-lg shadow-lg transform transition-transform flex flex-col items-center justify-center ${
-                    isBottomSheetOpen ? 'translate-y-0 h-64' : 'translate-y-full'
-                }`}>
-                {isLoading ? (
-                    <div className="p-2">
-                        <LoadingSpinner />
-                    </div>
-                ) : (
-                    <>
-                        {apiResponse === ApiResponse.Success ? (
-                            <div
-                                className={`fixed inset-x-0 bottom-0 p-4 bg-white rounded-t-lg shadow-lg 
-                    transform transition-transform flex flex-col items-center justify-center ${isBottomSheetOpen ? 'translate-y-0 h-64' : 'translate-y-full'}`}>
-                                <Image src={icon_success} alt="submit" className="m-5" />
-                                <div className=" text-2xl">完成送機行程</div>
-                            </div>
-                        ) : (
-                            <div className="max-w-sm mx-auto sm:max-w-md">
-                                <div className="w-full">
-                                    <p className="text-2xl text-left px-4">查不到「{fields.flightNumber}」航班資訊</p>
-                                    <p className="text-left px-4">
-                                        請確認航班資訊、起飛時間等，你也可以直接填寫此航班作為機場接送資訊
-                                    </p>
-                                </div>
-                                <div className="w-full flex flex-col justify-center gap-4 mt-4">
-                                    <button
-                                        onClick={handleSubmitAfterCheck}
-                                        className="w-full p-2 border border-gray-300 rounded-md bg-main-blue text-white">
-                                        確認航班資訊，並送出
-                                    </button>
-                                    <button
-                                        onClick={handleFormReset}
-                                        className="w-full p-2 border border-gray-300 rounded-md bg-main-blue text-white">
-                                        重新填寫
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </>
-                )}
-            </div>
+            <ButtonSheet
+                isBottomSheetOpen={isBottomSheetOpen}
+                isLoading={isLoading}
+                apiResponse={apiResponse}
+                fields={fields}
+                handleSubmitAfterCheck={handleSubmitAfterCheck}
+                handleFormReset={handleFormReset}
+            />
         </div>
     );
 };

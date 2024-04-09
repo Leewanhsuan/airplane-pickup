@@ -9,7 +9,7 @@ interface FormErrors {
     remarks?: string;
 }
 
-interface FormFields {
+export interface FormFields {
     airport: string;
     flightNumber: string;
     name: string;
@@ -52,7 +52,7 @@ const fieldValidations: FieldValidation = {
         errorMessage: '格式錯誤，請填寫與護照姓名相同的英文姓名'
     },
     phone: {
-        regex: /^\d+$/,
+        regex: /^\d{10}$/,
         errorMessage: '格式錯誤，應由數字組成 ex.0912345678'
     },
     idOrPassport: {
